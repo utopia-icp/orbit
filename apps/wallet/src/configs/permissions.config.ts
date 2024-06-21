@@ -14,6 +14,7 @@ import {
   isResourceActionContained,
   isSystemResourceActionContained,
   isUserResourceActionContained,
+  isExternalCanisterResourceActionContained,
 } from '~/utils/permissions.utils';
 import { variantIs } from '~/utils/helper.utils';
 
@@ -24,6 +25,39 @@ export const defaultAllowLevels = (): ResourceAccessAllowLevels => ({
 });
 
 export const globalPermissions = (): AggregatedResoucePermissions[] => [
+  {
+    resourceType: ResourceTypeEnum.ExternalCanister,
+    resources: [
+      {
+        action: ResourceActionEnum.Read,
+        resource: { ExternalCanister: { Read: { Any: null } } },
+        allow: defaultAllowLevels(),
+        canEdit: false,
+      },
+      {
+        action: ResourceActionEnum.Create,
+        resource: { ExternalCanister: { Create: { Any: null } } },
+        allow: defaultAllowLevels(),
+        canEdit: false,
+      },
+      {
+        action: ResourceActionEnum.Change,
+        resource: { ExternalCanister: { Change: { Any: null } } },
+        allow: defaultAllowLevels(),
+        canEdit: false,
+      },
+    ],
+    match(specifier: Resource, resource: Resource): boolean {
+      if (variantIs(specifier, 'ExternalCanister') && variantIs(resource, 'ExternalCanister')) {
+        return isExternalCanisterResourceActionContained(
+          specifier.ExternalCanister,
+          resource.ExternalCanister,
+        );
+      }
+
+      return false;
+    },
+  },
   {
     resourceType: ResourceTypeEnum.User,
     resources: [

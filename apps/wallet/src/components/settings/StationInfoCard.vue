@@ -125,24 +125,13 @@
           </VBtn>
         </template>
       </ActionBtn>
-      <ActionBtn
-        data-test-id="remove-station-btn"
-        :text="$t(`app.station_info_card_remove_btn`)"
-        :title="$t(`app.station_info_card_remove_btn`)"
-        :content="$t(`app.station_info_card_remove_btn_confirm`)"
-        variant="text"
-        :submit="removeStation"
-      >
-      </ActionBtn>
     </VCardActions>
   </VCard>
 </template>
 
 <script lang="ts" setup>
-import { Principal } from '@dfinity/principal';
 import { mdiContentCopy, mdiPencil } from '@mdi/js';
 import { computed, ref } from 'vue';
-import { useRouter } from 'vue-router';
 import {
   VBtn,
   VCard,
@@ -162,7 +151,6 @@ import {
   useOnFailedOperation,
   useOnSuccessfulOperation,
 } from '~/composables/notifications.composable';
-import { defaultHomeRoute } from '~/configs/routes.config';
 import { ManageSystemInfoOperationInput, Request } from '~/generated/station/station.did';
 import { storeUserStationToUserStation } from '~/mappers/stations.mapper';
 import { i18n } from '~/plugins/i18n.plugin';
@@ -177,32 +165,8 @@ import StationInfoForm, { StationInfoModel } from './StationInfoForm.vue';
 const station = useStationStore();
 const session = useSessionStore();
 const app = useAppStore();
-const router = useRouter();
 const isMainStation = computed(() => station.canisterId === session.mainStation?.toText());
 const controlPanelService = services().controlPanel;
-
-async function removeStation(): Promise<void> {
-  await services().controlPanel.manageUserStations({
-    Remove: session.data.stations
-      .filter(w => w.canisterId === station.canisterId)
-      .map(w => storeUserStationToUserStation(w).canister_id),
-  });
-
-  await session.refreshUserStationsList();
-
-  let maybeStationToRedirect = session.mainStation;
-  if (!maybeStationToRedirect && session.data.stations[0]?.canisterId) {
-    maybeStationToRedirect = Principal.fromText(session.data.stations[0].canisterId);
-  }
-
-  if (maybeStationToRedirect) {
-    await session.connectStation(maybeStationToRedirect);
-  } else {
-    session.disconnectStation();
-  }
-
-  router.push({ name: defaultHomeRoute });
-}
 
 const onFailedOperation = (): void => {
   app.sendNotification({

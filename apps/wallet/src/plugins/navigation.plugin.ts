@@ -1,10 +1,4 @@
-import {
-  mdiBookOpenVariant,
-  mdiCogs,
-  mdiFormatListText,
-  mdiPlusBox,
-  mdiWalletBifold,
-} from '@mdi/js';
+import { mdiApi, mdiBookOpenVariant, mdiCogs, mdiPlusBox, mdiWalletBifold } from '@mdi/js';
 import { App, computed, Ref, ref, watch } from 'vue';
 import { RouteRecordRaw } from 'vue-router';
 import { Routes } from '~/configs/routes.config';
@@ -38,6 +32,19 @@ const sections = (): NavigationSections => ({
       icon: mdiPlusBox,
     },
     {
+      name: 'services',
+      localeKey: 'navigation.services',
+      action: {
+        type: NavigationActionType.To,
+        handle: route => (route.params.locale ? `/${route.params.locale}/services` : '/services'),
+      },
+      auth: {
+        type: NavigastionAuthType.Route,
+        route: Routes.Services,
+      },
+      icon: mdiApi,
+    },
+    {
       name: 'accounts',
       localeKey: 'navigation.accounts',
       action: {
@@ -49,20 +56,6 @@ const sections = (): NavigationSections => ({
         route: Routes.Accounts,
       },
       icon: mdiWalletBifold,
-    },
-    {
-      name: 'transfer_requests',
-      localeKey: 'navigation.transfer_requests',
-      action: {
-        type: NavigationActionType.To,
-        handle: route =>
-          route.params.locale ? `/${route.params.locale}/transfer-requests` : '/transfer-requests',
-      },
-      auth: {
-        type: NavigastionAuthType.Route,
-        route: Routes.TransferRequests,
-      },
-      icon: mdiFormatListText,
     },
     {
       name: 'address_book',

@@ -27,10 +27,6 @@
       />
       <VListItem v-else :title="noneSelectedText" :prepend-icon="mdiWallet" />
     </template>
-
-    <template #append-item>
-      <AddStationListItem />
-    </template>
   </VSelect>
 </template>
 <script lang="ts" setup>
@@ -41,7 +37,6 @@ import { useI18n } from 'vue-i18n';
 import { useAppStore } from '~/stores/app.store';
 import { useSessionStore } from '~/stores/session.store';
 import { computedStationName } from '~/utils/app.utils';
-import AddStationListItem from './add-station/AddStationListItem.vue';
 import { VListItem, VSelect } from 'vuetify/components';
 
 const props = withDefaults(

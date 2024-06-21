@@ -101,6 +101,12 @@ export const withCanisterIds = (
           : JSON.stringify(`http://${canisters.internet_identity}.localhost:4943`),
       };
 
+      buildEnvVars['import.meta.env.APP_URL'] = JSON.stringify(
+        isProduction && icpNetwork !== 'local'
+          ? `https://${canisters.app_wallet}.icp0.io`
+          : `http://${canisters.app_wallet}.localhost:4943`,
+      );
+
       return {
         define: { ...buildEnvVars },
         test: {

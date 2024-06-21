@@ -1,6 +1,6 @@
 export default {
   app: {
-    title: '{app} Wallet',
+    title: '{app}',
     action_save_failed: 'Failed to save action, please try again.',
     action_save_success: 'Action successfully saved.',
     session_load_error: 'Failed to load your session, please try again.',
@@ -8,6 +8,7 @@ export default {
       main: 'WARNING: Test environment.',
       info: 'Unstable features and data.',
     },
+    new_service: 'New Service',
     api_compatibility_error:
       'Failed to check the compatibility of your wallet, you may experience issues.',
     stations: 'Wallets',
@@ -22,7 +23,7 @@ export default {
     manage_associated_station: 'Manage associated wallet',
     manage_associated_station_hint: 'These settings only apply to your user and not to the wallet.',
     user_activities_card_title: 'User Activities',
-    station_upgrades_card_title: 'Wallet Changes',
+    station_upgrades_card_title: 'Upgrades',
     data_load_error: 'Failed to load data, please try again.',
     dialog_confirmation_title: 'Confirmation',
     dialog_confirmation_question: 'Are you sure you want to continue with this action?',
@@ -62,18 +63,18 @@ export default {
     download_error: 'Failed to download file, please try again.',
     leave_page_warning: 'Are you sure you want to leave? In progress changes will be lost.',
     loading_details: 'Loading details ...',
-    account_dialog_create_new_title: 'Create new account',
+    account_dialog_create_new_title: 'Create new asset',
     account_dialog_view_title: 'Account',
     account_dialog_access_read: 'Read',
     account_dialog_access_read_hint: 'Read only access to the account.',
-    account_dialog_access_configuration: 'Change account settings',
+    account_dialog_access_configuration: 'Change settings',
     account_dialog_access_configuration_hint:
-      'Access to change account settings, such as account name, policies, etc.',
+      'Access to change settings, such as name, permissions, policies, etc.',
     account_dialog_access_transfer: 'Transfer funds',
     account_dialog_access_transfer_hint: 'Access to transfer funds from the account.',
-    account_dialog_request_policy_configuration: 'Change account settings',
+    account_dialog_request_policy_configuration: 'Change settings',
     account_dialog_request_policy_configuration_hint:
-      'The policy that needs to be approved to change account settings.',
+      'The policy that needs to be approved to change settings.',
     account_dialog_request_policy_transfer: 'Transfer funds',
     account_dialog_request_policy_transfer_hint:
       'The policy that needs to be approved to transfer funds.',
@@ -307,18 +308,18 @@ export default {
   },
   sidebar: {
     highlights: {
-      main: 'Trustless Wallet {line1} {line2} {line3}',
-      line3: 'Multichain',
-      line1: 'Digital Assets',
-      line2: 'Multi-Custody',
+      main: 'Trustless Compute {line1} {line2} {line3}',
+      line1: 'Sovereign',
+      line2: 'Secure',
+      line3: 'Tamperproof',
     },
   },
   landing: {
-    title: 'Seamless Multichain',
+    title: 'Private Compute',
     subtitle: 'One Platform, Full Control',
     description:
-      'Orbit streamlines on-chain asset management for enterprises, DAOs, and teams, consolidating control and visibility into a single, intuitive platform.',
-    connect_title: 'Securely connect to manage your digital assets',
+      'UTOPIA is a private compute platform built on a foundation of mathematics, making it tamperproof and resilient.',
+    connect_title: 'Connect to manage UTOPIA',
     connect_btn: 'Connect with Internet Identity',
     connect_error: 'Failed to connect, please try again.',
   },
@@ -377,9 +378,9 @@ export default {
   },
   terms: {
     deposits: 'Deposits',
-    station: 'Wallet',
+    station: 'Management',
     all_done: 'All done',
-    station_id: 'Wallet ID',
+    station_id: 'Service ID',
     details: 'Details',
     approve: 'Approve',
     create: 'Create',
@@ -391,7 +392,7 @@ export default {
     metadata: 'Metadata',
     wasm: 'Wasm',
     arg: 'Arg',
-    access: 'Access',
+    access: 'Permissions',
     previous: 'Previous',
     comment_optional: 'Comment (optional)',
     next: 'Next',
@@ -458,7 +459,7 @@ export default {
     signin: 'Sign In',
     signout: 'Sign Out',
     anonymous: 'Anonymous',
-    new_account: 'Create Account',
+    new_account: 'Create Asset',
     edit_account: 'Edit Account',
     accounts: 'Accounts',
     addresses: 'Addresses',
@@ -491,7 +492,7 @@ export default {
     cancelled: 'Cancelled',
     user_name: 'User Name',
     scheduled: 'Scheduled',
-    station_name: 'Wallet Name',
+    station_name: 'Service Name',
     users: 'Users',
     everyone: 'Everyone',
     identity_name: 'Identity Name',
@@ -533,7 +534,7 @@ export default {
   },
   navigation: {
     home: 'Home',
-    accounts: 'Accounts',
+    accounts: 'Digital Assets',
     address_book: 'Address Book',
     users: 'Users',
     settings: 'Settings',
@@ -547,10 +548,11 @@ export default {
     transfer_requests: 'Transfer Requests',
     permissions: 'Permissions',
     request_policies: 'Request Policies',
+    services: 'Services',
   },
   pages: {
     accounts: {
-      title: 'Accounts',
+      title: 'Digital Assets',
       btn_new_transfer: 'New transfer',
       btn_upload_csv: 'Upload CSV',
       error_fetching_account: 'Error fetching account, please try again.',
@@ -572,6 +574,9 @@ export default {
       btn_new_entry: 'New entry',
       no_results_found: 'No address book entry found.',
       error_fetching_address_book: 'Error fetching address book, please try again.',
+    },
+    services: {
+      title: 'Services',
     },
     user_settings: {
       title: 'Account Info & Settings',
@@ -702,6 +707,7 @@ export default {
       request: 'Request',
       addressbook: 'Address Book',
       managesysteminfo: 'Manage System Info',
+      externalcanister: 'Services',
     },
     actions: {
       list: 'List',
@@ -715,6 +721,8 @@ export default {
       systeminfocapabilities: 'Capabilities (Supported Assets)',
       systeminfoconfig: 'Configuration (Upgrades, Metrics, Usage)',
       managesysteminfo: 'Manage System Info (e.g. name)',
+      call: 'Call',
+      change: 'Change',
     },
     allow: {
       public: 'Anyone',
@@ -761,7 +769,9 @@ export default {
       removeusergroup: 'Remove user group',
       addaccount: 'Add account',
       managesysteminfo: 'Manage system info',
-      changeexternalcanister: 'Change external canister',
+      changeexternalcanister: 'Change service',
+      createexternalcanister: 'Create service',
+      callexternalcanister: 'Call service',
     },
   },
 };

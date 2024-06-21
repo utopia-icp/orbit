@@ -10,9 +10,7 @@ import {
   STATION_API_VERSION,
   SUPPORTED_LOCALES,
 } from './core/configs.core';
-import { withApiCompatibilityFile } from './plugins/with-compatibility-file.plugin';
 import { withIcAssetsFile } from './plugins/with-ic-assets.plugin';
-import { withVersionedEntrypoint } from './plugins/with-versioned-entrypoint.plugin';
 import { getCommitHash } from './utils/git.utils';
 import { withCanisterIds } from './plugins/with-canister-ids';
 
@@ -44,8 +42,6 @@ export default defineConfig(_ => {
       vue(),
       vuetify({ autoImport: true }),
       withCanisterIds({ isProduction }),
-      withApiCompatibilityFile(),
-      withVersionedEntrypoint(),
       withIcAssetsFile(isProduction && MODE !== 'localhost'),
     ],
     build: {
@@ -132,7 +128,6 @@ export default defineConfig(_ => {
       'import.meta.env.DEV': !isProduction,
       'import.meta.env.APP_STATION_API_VERSION': JSON.stringify(STATION_API_VERSION),
       'import.meta.env.APP_MODE': JSON.stringify(ENV.APP_MODE),
-      'import.meta.env.APP_URL': JSON.stringify(ENV.APP_URL),
       'import.meta.env.APP_BUILD_MODE': JSON.stringify(mode),
       'import.meta.env.APP_BUILD_VERSION': JSON.stringify(process.env.npm_package_version),
       'import.meta.env.APP_BUILD_HASH': JSON.stringify(commitHash),

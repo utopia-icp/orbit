@@ -14,6 +14,7 @@ export enum Routes {
   Initialization = 'Initialization',
   AddStation = 'AddStation',
   Permissions = 'Permissions',
+  Services = 'Services',
   // Request Pages
   Requests = 'Requests',
   TransferRequests = 'TransferRequests',
@@ -29,4 +30,4 @@ export enum RouteStatusCode {
 }
 
 export const defaultLoginRoute = Routes.Login;
-export const defaultHomeRoute = Routes.Accounts;
+export const defaultHomeRoute = Routes.Services;

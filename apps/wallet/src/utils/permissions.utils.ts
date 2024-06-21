@@ -7,6 +7,7 @@ import {
   ResourceId,
   SystemResourceAction,
   UserResourceAction,
+  ExternalCanisterResourceAction,
 } from '~/generated/station/station.did';
 import { variantIs } from '~/utils/helper.utils';
 
@@ -116,6 +117,29 @@ export const isUserResourceActionContained = (a: UserResourceAction, b: UserReso
 
   if (variantIs(a, 'Update') && variantIs(b, 'Update')) {
     return isResourceIdContained(a.Update, b.Update);
+  }
+
+  return false;
+};
+
+export const isExternalCanisterResourceActionContained = (
+  a: ExternalCanisterResourceAction,
+  b: ExternalCanisterResourceAction,
+) => {
+  if (variantIs(a, 'Change') && variantIs(b, 'Change')) {
+    return true;
+  }
+
+  if (variantIs(a, 'Call') && variantIs(b, 'Call')) {
+    return true;
+  }
+
+  if (variantIs(a, 'Create') && variantIs(b, 'Create')) {
+    return true;
+  }
+
+  if (variantIs(a, 'Read') && variantIs(b, 'Read')) {
+    return true;
   }
 
   return false;

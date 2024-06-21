@@ -14,7 +14,6 @@
       </div>
       <div class="d-flex flex-column flex-grow-0 pa-4">
         <slot name="footer">
-          <AlphaWarning class="mb-12" />
           <a v-if="showFooter" href="https://internetcomputer.org" target="_blank">
             <img :src="poweredByBadge" height="20" />
           </a>
@@ -27,7 +26,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import { VNavigationDrawer } from 'vuetify/components';
-import AlphaWarning from '~/components/layouts/AlphaWarning.vue';
 import SidebarHighlights from '~/components/ui/SidebarHighlights.vue';
 import { useAppStore } from '~/stores/app.store';
 import poweredByBadge from '~assets/images/powered-by-badge.svg';

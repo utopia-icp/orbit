@@ -340,6 +340,31 @@ const router = createRouter({
           ],
         },
         {
+          path: 'services',
+          name: Routes.Services,
+          component: () => import('~/pages/ServicesPage.vue'),
+          props: () => {
+            return {
+              breadcrumbs: [
+                {
+                  title: i18n.global.t('navigation.home'),
+                  to: { name: defaultHomeRoute },
+                },
+                {
+                  title: i18n.global.t('navigation.services'),
+                },
+              ],
+            };
+          },
+          meta: {
+            auth: {
+              check: {
+                session: RequiredSessionState.ConnectedToStation
+              },
+            },
+          },
+        },
+        {
           path: 'address-book',
           name: Routes.AddressBook,
           component: () => import('~/pages/AddressBookPage.vue'),
