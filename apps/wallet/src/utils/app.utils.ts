@@ -1,3 +1,4 @@
+import { Certificate, HttpAgent } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { Routes, defaultHomeRoute, defaultLoginRoute } from '~/configs/routes.config';
 import { ApiError } from '~/generated/control-panel/control_panel.did';
@@ -5,6 +6,7 @@ import { i18n } from '~/plugins/i18n.plugin';
 import { redirectToKey, router } from '~/plugins/router.plugin';
 import { useAppStore } from '~/stores/app.store';
 import { useSessionStore } from '~/stores/session.store';
+import { arrayBufferToHex } from '~/utils/crypto.utils';
 
 export const copyToClipboard = (
   args: {
@@ -93,3 +95,33 @@ export const registerBeforeUnloadConfirmation = (): void => {
 export const unregisterBeforeUnloadConfirmation = (): void => {
   window.removeEventListener('beforeunload', beforeUnloadCallback);
 };
+
+export async function fetchCanisterChecksum(
+  agent: HttpAgent,
+  canisterId: Principal,
+): Promise<string | null> {
+  const encoder = new TextEncoder();
+  const path: ArrayBuffer[] = [
+    encoder.encode('canister'),
+    canisterId.toUint8Array(),
+    encoder.encode('module_hash'),
+  ];
+
+  const state = await agent.readState(canisterId, {
+    paths: [path],
+  });
+
+  const certificate = await Certificate.create({
+    canisterId,
+    certificate: state.certificate,
+    rootKey: agent.rootKey,
+  });
+
+  const moduleHash = certificate.lookup(path);
+
+  if (!moduleHash) {
+    return null;
+  }
+
+  return await arrayBufferToHex(moduleHash);
+}

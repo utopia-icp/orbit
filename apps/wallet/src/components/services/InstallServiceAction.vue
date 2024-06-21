@@ -14,9 +14,9 @@
     <VIcon v-if="props.appendIcon" class="ml-1" :icon="props.appendIcon" />
   </VBtn>
 
-  <ServiceChangeDialog
+  <InstallServiceDialog
     :service-id="props.serviceId"
-    :app="props.app"
+    :apps="props.apps"
     :open="open"
     :readonly="props.readonly"
     :dialog-max-width="800"
@@ -32,13 +32,13 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { VBtn } from 'vuetify/components';
-import ServiceChangeDialog from './ServiceChangeDialog.vue';
-import { ServiceInstalled } from '~/types/app.types';
+import InstallServiceDialog from './InstallServiceDialog.vue';
+import { RegistryApp } from '~/types/app.types';
 
 const props = withDefaults(
   defineProps<{
     serviceId: string;
-    app: ServiceInstalled;
+    apps: RegistryApp[];
     icon?: string;
     text?: string;
     size?: 'x-small' | 'small' | 'default' | 'medium' | 'large' | 'x-large';

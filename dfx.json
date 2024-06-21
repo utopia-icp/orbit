@@ -93,13 +93,6 @@
         "subnet_type": "application"
       }
     },
-    "testing": {
-      "providers": ["https://icp0.io"],
-      "type": "persistent",
-      "replica": {
-        "subnet_type": "application"
-      }
-    },
     "local": {
       "bind": "127.0.0.1:4943",
       "type": "ephemeral",

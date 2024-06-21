@@ -14,7 +14,7 @@ lazy_static! {
         Arc::new(ExternalCanisterService::default());
 }
 
-const CREATE_CANISTER_CYCLES: u128 = 100_000_000_000; // the default fee of 100 B cycles
+const CREATE_CANISTER_CYCLES: u128 = 500_000_000_000; // the default fee of 500 B cycles
 
 #[derive(Default, Debug)]
 pub struct ExternalCanisterService {}

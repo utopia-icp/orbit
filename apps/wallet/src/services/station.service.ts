@@ -10,6 +10,7 @@ import {
   AddUserOperationInput,
   Capabilities,
   ChangeCanisterOperationInput,
+  ChangeExternalCanisterOperationInput,
   CreateRequestInput,
   EditAccountOperationInput,
   EditAddressBookEntryOperationInput,
@@ -752,6 +753,36 @@ export class StationService {
       title: [],
       summary: [],
       operation: { EditAccount: input },
+    });
+
+    if (variantIs(result, 'Err')) {
+      throw result.Err;
+    }
+
+    return result.Ok.request;
+  }
+
+  async addService(): Promise<Request> {
+    const result = await this.actor.create_request({
+      execution_plan: [{ Immediate: null }],
+      title: [],
+      summary: [],
+      operation: { CreateExternalCanister: {} },
+    });
+
+    if (variantIs(result, 'Err')) {
+      throw result.Err;
+    }
+
+    return result.Ok.request;
+  }
+
+  async installService(input: ChangeExternalCanisterOperationInput): Promise<Request> {
+    const result = await this.actor.create_request({
+      execution_plan: [{ Immediate: null }],
+      title: [],
+      summary: [],
+      operation: { ChangeExternalCanister: input },
     });
 
     if (variantIs(result, 'Err')) {

@@ -91,3 +91,7 @@ export interface ServiceInstalled {
   checksum: string;
   updates: RegistryAppVersion[];
 }
+
+export interface ServiceUninstalled {
+  id: string;
+}

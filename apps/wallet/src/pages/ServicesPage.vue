@@ -19,7 +19,8 @@
 
         <DataLoader
           :load="load"
-          :refresh-interval-ms="5000"
+          :refresh-interval-ms="2500"
+          :disable-refresh="disableRefresh"
           @loaded="
             result => {
               registryApps = result.apps;
@@ -28,42 +29,13 @@
             }
           "
         >
-          <VRow v-if="uninstalledServices.length">
-            <VCol v-for="(service, idx) in uninstalledServices" :key="idx" cols="12" md="6">
-              <VCard>
-                <VCardTitle>{{ `#${idx + 1} Created Service` }}</VCardTitle>
-                <VCardText>
-                  <VList lines="two" class="bg-transparent">
-                    <VListItem class="px-0">
-                      <VListItemTitle class="font-weight-bold">Service ID</VListItemTitle>
-                      <VListItemSubtitle>
-                        <span>
-                          {{ service.id }}
-                          <VBtn
-                            size="x-small"
-                            variant="text"
-                            :icon="mdiContentCopy"
-                            @click="
-                              copyToClipboard({
-                                textToCopy: service.id,
-                                sendNotification: true,
-                              })
-                            "
-                          />
-                        </span>
-                      </VListItemSubtitle>
-                    </VListItem>
-                  </VList>
-                </VCardText>
-              </VCard>
-            </VCol>
-          </VRow>
           <VRow v-if="installedServices.length">
-            <VCol v-for="(service, idx) in installedServices" :key="idx" cols="12" md="6">
+            <VCol v-for="(service, idx) in installedServices" :key="idx" cols="12" md="4">
               <VCard>
                 <VCardTitle>{{ `#${idx + 1} ${service.name}` }}</VCardTitle>
+                <VCardSubtitle class="text-wrap">{{ service.description }}</VCardSubtitle>
                 <VCardText>
-                  <VList lines="two" class="bg-transparent">
+                  <VList class="bg-transparent">
                     <VListItem class="px-0">
                       <VListItemTitle class="font-weight-bold">Service ID</VListItemTitle>
                       <VListItemSubtitle>
@@ -92,13 +64,20 @@
                     <VListItem class="px-0">
                       <VListItemTitle class="font-weight-bold">Checksum</VListItemTitle>
                       <VListItemSubtitle>
-                        <span>{{ service.checksum }}</span>
-                      </VListItemSubtitle>
-                    </VListItem>
-                    <VListItem class="px-0">
-                      <VListItemTitle class="font-weight-bold">Description</VListItemTitle>
-                      <VListItemSubtitle>
-                        <span>{{ service.description }}</span>
+                        <span>
+                          <TextOverflow :text="service.checksum" :max-length="26" />
+                          <VBtn
+                            size="x-small"
+                            variant="text"
+                            :icon="mdiContentCopy"
+                            @click="
+                              copyToClipboard({
+                                textToCopy: service.checksum,
+                                sendNotification: true,
+                              })
+                            "
+                          />
+                        </span>
                       </VListItemSubtitle>
                     </VListItem>
                     <VListItem class="px-0">
@@ -112,11 +91,13 @@
                 <VCardActions class="mx-2">
                   <ServiceChangeAction
                     :service-id="service.id"
+                    :app="service"
                     class="px-1 mb-2"
                     size="small"
                     color="default"
                     variant="text"
                     :append-icon="mdiTuneVariant"
+                    @opened="disableRefresh = $event"
                   >
                     configure
                   </ServiceChangeAction>
@@ -135,6 +116,70 @@
               </VCard>
             </VCol>
           </VRow>
+
+          <VRow>
+            <VCol v-for="(service, idx) in uninstalledServices" :key="idx" cols="12" md="4">
+              <VCard>
+                <VCardTitle>{{ `#${idx + 1} Created Service` }}</VCardTitle>
+                <VCardText class="py-0">
+                  <VList class="bg-transparent py-0">
+                    <VListItem class="px-0">
+                      <VListItemTitle class="font-weight-bold">Service ID</VListItemTitle>
+                      <VListItemSubtitle>
+                        <span>
+                          {{ service.id }}
+                          <VBtn
+                            size="x-small"
+                            variant="text"
+                            :icon="mdiContentCopy"
+                            @click="
+                              copyToClipboard({
+                                textToCopy: service.id,
+                                sendNotification: true,
+                              })
+                            "
+                          />
+                        </span>
+                      </VListItemSubtitle>
+                    </VListItem>
+                  </VList>
+                </VCardText>
+                <VCardActions>
+                  <VSpacer />
+                  <InstallServiceAction
+                    :service-id="service.id"
+                    :apps="registryApps"
+                    class="px-1 mb-2"
+                    size="small"
+                    color="default"
+                    variant="text"
+                    :append-icon="mdiTuneVariant"
+                    @opened="disableRefresh = $event"
+                  >
+                    configure
+                  </InstallServiceAction>
+                </VCardActions>
+              </VCard>
+            </VCol>
+            <VCol cols="12" md="4">
+              <VCard :loading="creatingNewService">
+                <VCardTitle>Install new service</VCardTitle>
+                <VCardText>Reserve a new service to deploy your new application.</VCardText>
+                <VCardActions class="mt-2">
+                  <VSpacer />
+                  <VBtn
+                    color="primary"
+                    variant="text"
+                    size="small"
+                    :disabled="creatingNewService"
+                    @click="addService"
+                  >
+                    Add service
+                  </VBtn>
+                </VCardActions>
+              </VCard>
+            </VCol>
+          </VRow>
         </DataLoader>
       </PageBody>
     </template>
@@ -145,7 +190,7 @@
 import { mdiContentCopy, mdiOpenInNew, mdiTuneVariant } from '@mdi/js';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { VCardActions, VSpacer } from 'vuetify/components';
+import { VCardActions, VCardSubtitle, VCardTitle, VListItem, VSpacer } from 'vuetify/components';
 import AuthCheck from '~/components/AuthCheck.vue';
 import DataLoader from '~/components/DataLoader.vue';
 import PageLayout from '~/components/PageLayout.vue';
@@ -153,7 +198,13 @@ import PageBody from '~/components/layouts/PageBody.vue';
 import PageHeader from '~/components/layouts/PageHeader.vue';
 import RecentRequests from '~/components/requests/RecentRequests.vue';
 import ServiceChangeAction from '~/components/services/ServiceChangeAction.vue';
+import InstallServiceAction from '~/components/services/InstallServiceAction.vue';
+import {
+  useOnFailedOperation,
+  useOnSuccessfulOperation,
+} from '~/composables/notifications.composable';
 import { Routes } from '~/configs/routes.config';
+import logger from '~/core/logger.core';
 import { services } from '~/plugins/services.plugin';
 import { useStationStore } from '~/stores/station.store';
 import type {
@@ -164,8 +215,10 @@ import type {
 } from '~/types/app.types';
 import { Privilege } from '~/types/auth.types';
 import { RequestDomains } from '~/types/station.types';
-import { copyToClipboard } from '~/utils/app.utils';
+import { copyToClipboard, fetchCanisterChecksum } from '~/utils/app.utils';
 import { variantIs } from '~/utils/helper.utils';
+import { icAgent } from '~/core/ic-agent.core';
+import TextOverflow from '~/components/TextOverflow.vue';
 
 const props = withDefaults(defineProps<PageProps>(), { title: undefined, breadcrumbs: () => [] });
 const i18n = useI18n();
@@ -175,6 +228,7 @@ const controlPanel = services().controlPanel;
 const registryApps = ref<RegistryApp[]>([]);
 const installedServices = ref<ServiceInstalled[]>([]);
 const uninstalledServices = ref<ServiceUninstalled[]>([]);
+const disableRefresh = ref(false);
 
 const formatServiceUrl = (serviceId: string) =>
   import.meta.env.PROD ? `https://${serviceId}.icp0.io` : `http://${serviceId}.localhost:4943/`;
@@ -222,6 +276,7 @@ const load = async (): Promise<{
   uninstalledServices: ServiceUninstalled[];
   apps: RegistryApp[];
 }> => {
+  const agent = icAgent.get();
   const [managedServices, apps] = await Promise.all([
     station.service.listRequests({
       types: [{ CreateExternalCanister: null }],
@@ -237,8 +292,11 @@ const load = async (): Promise<{
       variantIs(request.operation, 'CreateExternalCanister') &&
       request.operation.CreateExternalCanister.canister_id?.[0]
     ) {
-      // TODO: fetch checksum
-      const checksum = '';
+      const checksum =
+        (await fetchCanisterChecksum(
+          agent,
+          request.operation.CreateExternalCanister.canister_id[0],
+        )) || '';
       const app = apps.find(
         app => app.versions.findIndex(version => version.checksum === checksum) !== -1,
       );
@@ -262,5 +320,21 @@ const load = async (): Promise<{
   }
 
   return { services, uninstalledServices, apps };
+};
+
+const creatingNewService = ref(false);
+
+const addService = async () => {
+  try {
+    creatingNewService.value = true;
+    const request = await station.service.addService();
+    useOnSuccessfulOperation(request);
+  } catch (error) {
+    logger.error(`Failed to submit account ${error}`);
+
+    useOnFailedOperation();
+  } finally {
+    creatingNewService.value = false;
+  }
 };
 </script>

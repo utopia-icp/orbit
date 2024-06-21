@@ -37,6 +37,7 @@ Options:
   --init-icp-index fresh installs the icp index canister, used to query the ledger transactions
   --init-icp-ledger fresh installs the icp ledger canister, the current identity will be credited with ICP tokens
   --init-internet-identity fresh installs the internet identity canister
+  --init-system-canisters fresh installs the system canisters
   --init-app-wallet fresh installs the Orbit Wallet application
   --candid-generate generates the code for the candid specifications that the Orbit applications are using
   --approve-waiting-list approves the given principal to the waiting list
@@ -271,6 +272,14 @@ while [[ $# -gt 0 ]]; do
     shift
     exec_function setup_devenv
     exec_function setup_icp_index
+    echo
+    ;;
+  --init-system-canisters)
+    shift
+    exec_function setup_devenv
+    exec_function setup_icp_ledger
+    exec_function setup_icp_index
+    exec_function setup_internet_identity
     echo
     ;;
   --init-control-panel)
