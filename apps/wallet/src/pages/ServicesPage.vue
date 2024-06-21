@@ -24,9 +24,40 @@
             result => {
               registryApps = result.apps;
               installedServices = result.services;
+              uninstalledServices = result.uninstalledServices;
             }
           "
         >
+          <VRow v-if="uninstalledServices.length">
+            <VCol v-for="(service, idx) in uninstalledServices" :key="idx" cols="12" md="6">
+              <VCard>
+                <VCardTitle>{{ `#${idx + 1} Created Service` }}</VCardTitle>
+                <VCardText>
+                  <VList lines="two" class="bg-transparent">
+                    <VListItem class="px-0">
+                      <VListItemTitle class="font-weight-bold">Service ID</VListItemTitle>
+                      <VListItemSubtitle>
+                        <span>
+                          {{ service.id }}
+                          <VBtn
+                            size="x-small"
+                            variant="text"
+                            :icon="mdiContentCopy"
+                            @click="
+                              copyToClipboard({
+                                textToCopy: service.id,
+                                sendNotification: true,
+                              })
+                            "
+                          />
+                        </span>
+                      </VListItemSubtitle>
+                    </VListItem>
+                  </VList>
+                </VCardText>
+              </VCard>
+            </VCol>
+          </VRow>
           <VRow v-if="installedServices.length">
             <VCol v-for="(service, idx) in installedServices" :key="idx" cols="12" md="6">
               <VCard>
@@ -50,6 +81,30 @@
                             "
                           />
                         </span>
+                      </VListItemSubtitle>
+                    </VListItem>
+                    <VListItem class="px-0">
+                      <VListItemTitle class="font-weight-bold">Version</VListItemTitle>
+                      <VListItemSubtitle>
+                        <span>v{{ service.version }}</span>
+                      </VListItemSubtitle>
+                    </VListItem>
+                    <VListItem class="px-0">
+                      <VListItemTitle class="font-weight-bold">Checksum</VListItemTitle>
+                      <VListItemSubtitle>
+                        <span>{{ service.checksum }}</span>
+                      </VListItemSubtitle>
+                    </VListItem>
+                    <VListItem class="px-0">
+                      <VListItemTitle class="font-weight-bold">Description</VListItemTitle>
+                      <VListItemSubtitle>
+                        <span>{{ service.description }}</span>
+                      </VListItemSubtitle>
+                    </VListItem>
+                    <VListItem class="px-0">
+                      <VListItemTitle class="font-weight-bold">Tags</VListItemTitle>
+                      <VListItemSubtitle>
+                        <span>{{ service.tags.join(', ') }}</span>
                       </VListItemSubtitle>
                     </VListItem>
                   </VList>
@@ -101,7 +156,12 @@ import ServiceChangeAction from '~/components/services/ServiceChangeAction.vue';
 import { Routes } from '~/configs/routes.config';
 import { services } from '~/plugins/services.plugin';
 import { useStationStore } from '~/stores/station.store';
-import type { PageProps, RegistryApp, ServiceInstalled } from '~/types/app.types';
+import type {
+  PageProps,
+  RegistryApp,
+  ServiceInstalled,
+  ServiceUninstalled,
+} from '~/types/app.types';
 import { Privilege } from '~/types/auth.types';
 import { RequestDomains } from '~/types/station.types';
 import { copyToClipboard } from '~/utils/app.utils';
@@ -114,6 +174,7 @@ const station = useStationStore();
 const controlPanel = services().controlPanel;
 const registryApps = ref<RegistryApp[]>([]);
 const installedServices = ref<ServiceInstalled[]>([]);
+const uninstalledServices = ref<ServiceUninstalled[]>([]);
 
 const formatServiceUrl = (serviceId: string) =>
   import.meta.env.PROD ? `https://${serviceId}.icp0.io` : `http://${serviceId}.localhost:4943/`;
@@ -158,6 +219,7 @@ const fetchRegistryApps = async (): Promise<RegistryApp[]> => {
 
 const load = async (): Promise<{
   services: ServiceInstalled[];
+  uninstalledServices: ServiceUninstalled[];
   apps: RegistryApp[];
 }> => {
   const [managedServices, apps] = await Promise.all([
@@ -168,7 +230,8 @@ const load = async (): Promise<{
     fetchRegistryApps(),
   ]);
 
-  const services: Array<ServiceInstalled> = [];
+  const services: ServiceInstalled[] = [];
+  const uninstalledServices: ServiceUninstalled[] = [];
   for (const request of managedServices.requests) {
     if (
       variantIs(request.operation, 'CreateExternalCanister') &&
@@ -190,10 +253,14 @@ const load = async (): Promise<{
           version: app.versions.find(version => version.checksum === checksum)!.version,
           updates: app.versions.filter(version => version.checksum !== checksum),
         });
+      } else {
+        uninstalledServices.push({
+          id: request.operation.CreateExternalCanister.canister_id[0].toText(),
+        });
       }
     }
   }
 
-  return { services, apps };
+  return { services, uninstalledServices, apps };
 };
 </script>
