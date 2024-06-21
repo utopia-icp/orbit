@@ -5,13 +5,18 @@ import { idlFactory } from '~/generated/control-panel';
 import {
   CanDeployStationResponse,
   DeployStationInput,
+  GetArtifactResult,
   ListUserStationsInput,
   ManageUserStationsInput,
   RegisterUserInput,
+  SearchRegistryInput,
+  SearchRegistryResult,
+  UUID,
   User,
   UserStation,
   _SERVICE,
 } from '~/generated/control-panel/control_panel.did';
+import { ExtractOk } from '~/types/helper.types';
 import { transformIdlWithOnlyVerifiedCalls, variantIs } from '~/utils/helper.utils';
 
 export class ControlPanelService {
@@ -113,6 +118,28 @@ export class ControlPanelService {
   async canDeployStation(verifiedCall = false): Promise<CanDeployStationResponse> {
     const actor = verifiedCall ? this.verified_actor : this.actor;
     const result = await actor.can_deploy_station();
+
+    if (variantIs(result, 'Err')) {
+      throw result.Err;
+    }
+
+    return result.Ok;
+  }
+
+  async getArtifact(id: UUID): Promise<ExtractOk<GetArtifactResult>> {
+    const result = await this.actor.get_artifact({
+      artifact_id: id,
+    });
+
+    if (variantIs(result, 'Err')) {
+      throw result.Err;
+    }
+
+    return result.Ok;
+  }
+
+  async searchRegistry(input: SearchRegistryInput): Promise<ExtractOk<SearchRegistryResult>> {
+    const result = await this.actor.search_registry(input);
 
     if (variantIs(result, 'Err')) {
       throw result.Err;

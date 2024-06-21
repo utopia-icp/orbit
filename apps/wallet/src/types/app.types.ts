@@ -67,3 +67,27 @@ export interface CsvTable {
   headers: CsvRow;
   rows: CsvRow[];
 }
+
+export interface RegistryAppVersion {
+  checksum: string;
+  version: string;
+  wasm: Uint8Array | number[];
+  size: number;
+}
+
+export interface RegistryApp {
+  name: string;
+  description: string;
+  versions: RegistryAppVersion[];
+  tags: string[];
+}
+
+export interface ServiceInstalled {
+  id: string;
+  name: string;
+  description: string;
+  tags: string[];
+  version: string;
+  checksum: string;
+  updates: RegistryAppVersion[];
+}
