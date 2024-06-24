@@ -171,7 +171,7 @@
                     color="primary"
                     variant="text"
                     size="small"
-                    :disabled="creatingNewService"
+                    :disabled="installBtnIsDisabled"
                     @click="addService"
                   >
                     Add service
@@ -188,7 +188,7 @@
 
 <script lang="ts" setup>
 import { mdiContentCopy, mdiOpenInNew, mdiTuneVariant } from '@mdi/js';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { VCardActions, VCardSubtitle, VCardTitle, VListItem, VSpacer } from 'vuetify/components';
 import AuthCheck from '~/components/AuthCheck.vue';
@@ -219,6 +219,7 @@ import { copyToClipboard, fetchCanisterChecksum } from '~/utils/app.utils';
 import { variantIs } from '~/utils/helper.utils';
 import { icAgent } from '~/core/ic-agent.core';
 import TextOverflow from '~/components/TextOverflow.vue';
+import { useRouter } from 'vue-router';
 
 const props = withDefaults(defineProps<PageProps>(), { title: undefined, breadcrumbs: () => [] });
 const i18n = useI18n();
@@ -229,6 +230,7 @@ const registryApps = ref<RegistryApp[]>([]);
 const installedServices = ref<ServiceInstalled[]>([]);
 const uninstalledServices = ref<ServiceUninstalled[]>([]);
 const disableRefresh = ref(false);
+const showInstall = ref(false);
 
 const formatServiceUrl = (serviceId: string) =>
   import.meta.env.PROD ? `https://${serviceId}.icp0.io` : `http://${serviceId}.localhost:4943/`;
@@ -337,4 +339,16 @@ const addService = async () => {
     creatingNewService.value = false;
   }
 };
+
+const router = useRouter();
+
+onMounted(async () => {
+  if (router.currentRoute.value.query?.install) {
+    showInstall.value = true;
+  }
+});
+
+const installBtnIsDisabled = computed(() => {
+  return !showInstall.value || creatingNewService.value;
+});
 </script>

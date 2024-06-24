@@ -1,1 +1,1 @@
-export const disabledRequestOperations = [];
+export const disabledRequestOperations: string[] = [];

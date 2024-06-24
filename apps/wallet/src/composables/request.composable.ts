@@ -70,6 +70,9 @@ export const useAvailableDomains = (): Ref<AvailableDomain[]> => {
       { EditUserGroup: null },
       { RemoveUserGroup: null },
       { ManageSystemInfo: null },
+      { CallExternalCanister: [] },
+      { ChangeExternalCanister: [] },
+      { CreateExternalCanister: null },
     ],
   });
 

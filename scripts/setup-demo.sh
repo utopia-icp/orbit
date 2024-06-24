@@ -123,7 +123,7 @@ function delete_registry_entry() {
 
 # Run the setup functions in order to create the demoable UTOPIA
 setup_enviroment
-build_wasms
-deploy_control_panel
+# build_wasms
+# deploy_control_panel
 deploy_app_wallet
-add_apps_to_registry
+# add_apps_to_registry
