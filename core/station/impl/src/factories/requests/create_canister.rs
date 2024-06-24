@@ -33,7 +33,7 @@ impl Create<CreateExternalCanisterOperationInput> for CreateExternalCanisterRequ
                 .unwrap_or(RequestExecutionPlan::Immediate),
             input
                 .title
-                .unwrap_or_else(|| "CreateExternalCanister".to_string()),
+                .unwrap_or_else(|| "CreateServiceCanister".to_string()),
             input.summary,
         );
 

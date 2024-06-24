@@ -254,6 +254,8 @@ import RemoveAddressBookEntryOperation from './operations/RemoveAddressBookEntry
 import RemoveRequestPolicyOperation from './operations/RemoveRequestPolicyOperation.vue';
 import RemoveUserGroupOperation from './operations/RemoveUserGroupOperation.vue';
 import TransferOperation from './operations/TransferOperation.vue';
+import CreateExternalCanisterOperation from './operations/CreateExternalCanisterOperation.vue';
+import ChangeExternalCanisterOperation from './operations/ChangeExternalCanisterOperation.vue';
 import UnsupportedOperation from './operations/UnsupportedOperation.vue';
 
 const i18n = useI18n();
@@ -291,8 +293,8 @@ const componentsMap: {
   ChangeCanister: ChangeCanisterOperation,
   EditPermission: EditPermissionOperation,
   ManageSystemInfo: ManageSystemInfoOperation,
-  ChangeExternalCanister: UnsupportedOperation,
-  CreateExternalCanister: UnsupportedOperation,
+  ChangeExternalCanister: ChangeExternalCanisterOperation,
+  CreateExternalCanister: CreateExternalCanisterOperation,
   CallExternalCanister: UnsupportedOperation,
 };
 

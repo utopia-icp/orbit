@@ -18,6 +18,8 @@
           v-if="availableVersions.length"
           v-model="selectedVersion"
           :items="availableVersions"
+          :hint="`Checksum is ${wasmModuleChecksum}`"
+          :persistent-hint="!!selectedVersion"
           label="Which version would you like to install?"
           outlined
           dense
@@ -42,7 +44,7 @@
 <script lang="ts" setup>
 import { Principal } from '@dfinity/principal';
 import { mdiClose } from '@mdi/js';
-import { computed, ref } from 'vue';
+import { computed, watch, ref } from 'vue';
 import {
   VBtn,
   VCard,
@@ -59,6 +61,7 @@ import {
 import logger from '~/core/logger.core';
 import { useStationStore } from '~/stores/station.store';
 import { ServiceInstalled } from '~/types/app.types';
+import { arrayBufferToHashHex } from '~/utils/crypto.utils';
 
 const props = withDefaults(
   defineProps<{
@@ -90,14 +93,43 @@ const open = computed({
 const selectedVersion = ref<string | null>(null);
 const availableVersions = computed(() => props.app.updates.map(update => update.version));
 const station = useStationStore();
+const wasmModuleChecksum = ref('');
+const wasmModule = computed(
+  () => props.app.updates.find(update => update.version === selectedVersion.value)?.wasm,
+);
+
+function toArrayBuffer(input: Uint8Array | number[]) {
+  if (input instanceof Uint8Array) {
+    // If the input is already a Uint8Array, use its buffer
+    return input.buffer;
+  } else if (Array.isArray(input)) {
+    // If the input is a number array, create a new Uint8Array from it and then get the buffer
+    const uint8Array = new Uint8Array(input);
+    return uint8Array.buffer;
+  } else {
+    throw new TypeError('Input must be a Uint8Array or a number array');
+  }
+}
+
+watch(
+  () => wasmModule.value,
+  () => {
+    if (!wasmModule.value) {
+      wasmModuleChecksum.value = '';
+      return;
+    }
+
+    const buffer = toArrayBuffer(wasmModule.value);
+    arrayBufferToHashHex(buffer).then(checksum => {
+      wasmModuleChecksum.value = checksum;
+    });
+  },
+);
 
 const submit = async () => {
   try {
     submitting.value = true;
-    submitting.value = true;
-    const module = props.app.updates.find(update => update.version === selectedVersion.value)?.wasm;
-
-    if (!module) {
+    if (!wasmModule.value) {
       throw new Error('Module not found');
     }
 
@@ -105,7 +137,7 @@ const submit = async () => {
       canister_id: Principal.fromText(props.serviceId),
       arg: [],
       mode: { upgrade: null },
-      module,
+      module: wasmModule.value,
     });
 
     useOnSuccessfulOperation(request);

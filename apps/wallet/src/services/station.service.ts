@@ -765,7 +765,7 @@ export class StationService {
   async addService(): Promise<Request> {
     const result = await this.actor.create_request({
       execution_plan: [{ Immediate: null }],
-      title: [],
+      title: ['Create Service'],
       summary: [],
       operation: { CreateExternalCanister: {} },
     });
@@ -780,7 +780,7 @@ export class StationService {
   async installService(input: ChangeExternalCanisterOperationInput): Promise<Request> {
     const result = await this.actor.create_request({
       execution_plan: [{ Immediate: null }],
-      title: [],
+      title: ['Update Service'],
       summary: [],
       operation: { ChangeExternalCanister: input },
     });

@@ -40,7 +40,7 @@ function deploy_control_panel() {
   if [ $canister_id_exit_code -ne 0 ]; then
     echo "Canister 'control_panel' does not exist, creating and installing..."
 
-    dfx canister create control_panel --network $NETWORK --with-cycles 5000000000000
+    dfx canister create control_panel --network $NETWORK --with-cycles 10000000000000
     dfx canister install control_panel --network $NETWORK --wasm ./wasms/control_panel.wasm.gz
   else
     echo "Canister 'control_panel' already exists with ID: $canister_id_output"

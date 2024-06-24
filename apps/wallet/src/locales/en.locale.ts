@@ -257,6 +257,14 @@ export default {
         title: 'Manage system info',
         request_title: 'Manage system info request',
       },
+      createexternalcanister: {
+        title: 'Create service',
+        request_title: 'Create service request',
+      },
+      changeexternalcanister: {
+        title: 'Update service',
+        request_title: 'Update service request',
+      },
       unknown: {
         title: 'Unknown',
         request_title: 'Unknown request',
