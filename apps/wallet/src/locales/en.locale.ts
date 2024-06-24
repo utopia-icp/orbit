@@ -609,16 +609,16 @@ export default {
       create_new_group_title: 'Create new user group',
     },
     add_station: {
-      initialization_title: 'Welcome! How would you like to join Orbit?',
+      initialization_title: 'Welcome! How would you like to join UTOPIA?',
       add_station_title: 'How would you like to add a wallet?',
-      option_join_existing_station: 'Join existing wallet',
-      option_deploy_new_station: 'Create your own wallet',
-      join_station_title: 'Join existing wallet',
+      option_join_existing_station: 'Join existing management service',
+      option_deploy_new_station: 'Create new management service',
+      join_station_title: 'Join existing management service',
       join_station_body:
-        'Contact the owner to get the Wallet ID and send them your identity so that a user can be created for you.',
-      join_station_canister_id: 'Wallet ID',
-      join_station_name: 'Wallet Name',
-      join_station: 'Join wallet',
+        'Contact the system admins and send them your identity so that a user can be created for you.',
+      join_station_canister_id: 'Service ID',
+      join_station_name: 'Service Name',
+      join_station: 'Join Service',
 
       station_title: 'Create your own wallet',
       station_body:

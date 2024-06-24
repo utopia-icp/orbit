@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -eEuo pipefail
 
-NETWORK="local"
+NETWORK="production"
 
 function setup_enviroment() {
   . ./scripts/setup-node.sh
